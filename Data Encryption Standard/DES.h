@@ -2,10 +2,10 @@
 // Sean T Fitzgerald
 
 /*
-INPUT:
- 1. plaintextInput: The input string to the algorithm. Max length if 8 bytes (64 bits)
+Input:
+ 1. dataInput: The input char array to the algorithm. Max length if 8 bytes (64 bits)
  2. key: The encryption key for the DES scheme
-OUTPUT:
- Ciphertext string resulting from encrypting argument #1 with DES using argument #2 as the key
+Output:
+ 8-character (64-bit) ciphertext char array (on the stack) resulting from encrypting argument #1 with DES using argument #2 as the key
 */
-char[8] encryptDES(char[8] plaintextInput, char[8] key);
+char *encryptDES(char[8] dataInput, char[8] key);
