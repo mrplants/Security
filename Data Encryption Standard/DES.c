@@ -1,80 +1,94 @@
 // Data Encryption Standard
 // Sean T Fitzgerald
 
+#include "DES.h"
+
 /*
 INTERFACE
 */
 
 /*
-PUBLIC
+Input:
+ 1. key: The encryption key
+ 2. resultantKeys:the per round keys based on argument #1
 */
+void generatePerRoundKeys(const char[8] key, char[16][6] resultantKeys);
 
 /*
 Input:
- 1. dataInput: The input char array to the algorithm,
- 2. key: The encryption key for the DES scheme
-Output:
- Ciphertext char array resulting from encrypting argument #1 with DES using argument #2 as the key
+ 1. inputData: The input char array to the algorithm
 */
-char *encryptDES(const char[8] dataInput, const char[8] key);
-
-/*
-PRIVATE
-*/
+void generateInitialPermutation(const char[8] inputData, char[8] postPermutation);
 
 /*
 Input:
- 1. key: The encryption key for the DES scheme
-Output:
- 0 implies key parity is incorrect. Otherwise, key parity is correct.
+ 1. inputData: The input char array for the round
+ 2. roundResult: The char array result of the round
+ 3. roundKey: The key associated with this round
 */
-int checkKeyParityBits(const char[8] key);
+void generateNewRound(const char[8] inputData, char[8] roundResult, const char[6] ruondKey);
 
 /*
 Input:
- 1. key: The encryption key for the DES scheme
-Output:
- Array of 16 per-round keys of length 6 bytes (48 bits)
+ 1. inputData: The input char array to the function
+ 2. outputData: The output char array with teh left/right halves swapped.
 */
-char **generatePerRoundKeys(const char[8] key);
+ void swapHalves(const char[8] inputData, char[8] outputData);
 
 /*
 Input:
- 1. dataInput: The input char array to the algorithm
-Output:
- Result of initial permutation of the dataInput. Same size char array returned.
+ 1. inputData: The input char array to the function
+ 2. postPermutation: the result of the halves swapped
 */
-
-char *generateInitialPermutation(const char[8] dataInput);
+void generateFinalPermutation(const char[8] inputData, char[8] postPermutation);
 
 /*
 Input:
- 1. dataInput: The input char array to the round
- 2. roundKey: the key associated with this round
-Output:
- Result of one DES encryption round with argument #1. Same size char array returned.
+ 1. sourceKey: The key that will be copied
+ 2. destinationKey: The key which will be overwritten with argument #1
 */
-
-char *generateNewRound(const char[8] dataInput, const char[6] ruondKey);
-
-/*
-Input:
- 1. dataInput: The input char array to the function
-Output:
- Result of swapping left and right halves of argument #1. Same size char array returned.
-*/
-
- char *swapHalves(const char[8] dataInput);
-
- /*
-Input:
- 1. dataInput: The input char array to the function
-Output:
- Result of the final permutation of argument #1. Same size char array returned.
-*/
-
-char *generateFinalPermutation(const char[8] dataInput);
+void keyCopy(const char[8] sourceKey, char[8] destinationKey);
 
 /*
 IMPLEMENTATION
 */
+
+int encryptDES(const char[8] inputData, char[8] outputData, const char[8] key);
+{
+	/* Function temporary variables: */
+	int successValue = 1; // Bias toward success
+	char[8] tempData; // Temporary data buffer for in-between encryption steps
+	char[16][6] roundKeys; // To store the round keys
+
+	// First check the prity bit of the key to ensure that it was (1:256 chance) created and shared correctly (not super necessary, but might as well use the bits if we have them)
+	if (checkKeyParityBits(key) == 0) // 0 means incorrect  parity bits
+	{
+		successValue = 0; // 0 means unsuccessful algorithm. Still attempt encryption with non-parity key
+	}
+	
+	// Perform the initial permutation
+	generateInitialPermutation(inputData, tempData);
+
+	// Create the keys for each round
+	generatePerRoundKeys(key, roundKeys);
+
+	// Initialize tempData with inputData before key rounds
+	keyCopy(inputData, tempData);
+
+	// Run the 16 rounds
+	for (int i = 0; i < 16; ++i)
+	{
+		generateNewRound(tempData, outputData, roundKeys[i]); // Run the round
+		keyCopy(outputData, tempData); // Save the result for the next round
+	}
+
+	// Swap the halves of the data
+	swapHalves(tempData, outputData);
+	keyCopy(outputData, tempData);
+
+	// Perform the final reverse permutation
+	generateFinalPermutation(tempData, outputData);
+
+	// Return the result
+	return successValue;
+}

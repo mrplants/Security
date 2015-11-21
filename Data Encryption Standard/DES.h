@@ -3,9 +3,20 @@
 
 /*
 Input:
- 1. dataInput: The input char array to the algorithm. Max length if 8 bytes (64 bits)
- 2. key: The encryption key for the DES scheme
+ 1. inputData: The input char array.
+ 2. outputData: The output char array.
+ 3. key: The encryption key
 Output:
- 8-character (64-bit) ciphertext char array (on the stack) resulting from encrypting argument #1 with DES using argument #2 as the key
+ Success of the algorithm (0 is unsuccessful, otherwise successful)
+Notes:
+ Function will attempt to decrypt even if key parity is incorrect (Output will be 0, however)
 */
-char *encryptDES(char[8] dataInput, char[8] key);
+int encryptDES(const char[8] inputData, char[8] outputData, const char[8] key);
+
+/*
+Input:
+ 1. key: The encryption key
+Output:
+ 0 implies key parity is incorrect. Otherwise correct
+*/
+int checkKeyParityBits(const char[8] key);
