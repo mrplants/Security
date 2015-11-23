@@ -10,3 +10,6 @@ OBJ = DES.o
 
 DES: $(OBJ)
 	gcc -o $@ $^ $(CFLAGS)
+
+clean:
+	rm -f *.o
