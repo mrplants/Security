@@ -18,7 +18,7 @@ Output:
 Notes:
  The only difference between encryption and decryption is the order of the keys. Use this function for both and use argument #4 to differentiate
 */
-int performDES(const char[8] inputData, char[8] outputData, const char[8] key, const int decrypt)
+int performDES(const char inputData[8], char outputData[8], const char key[8], const int decrypt);
 
 /*
 Input:
@@ -26,7 +26,7 @@ Input:
  2. outputData: The output char array to the function post-encryption rounds
  3. roundKeys: The keys with which to perform the DES encryption rounds
 */
-void performEcryptionRounds(const char[8] inputData, char[8] outputData, const char[16][6] roundKeys);
+void performEcryptionRounds(const char inputData[8], char outputData[8], const char roundKeys[16][6]);
 
 /*
 Input:
@@ -34,13 +34,13 @@ Input:
  2. resultantKeys: The per round keys based on argument #1
  3. backward: Flag for generating decryption keys (0 for forward/encrypt, 1 for backward/decrypt)
 */
-void generatePerRoundKeys(const char[8] key, char[16][6] resultantKeys, int backward);
+void generatePerRoundKeys(const char key[8], char resultantKeys[16][6], int backward);
 
 /*
 Input:
  1. inputData: The input char array to the algorithm
 */
-void generateInitialPermutation(const char[8] inputData, char[8] postPermutation);
+void generateInitialPermutation(const char inputData[8], char postPermutation[8]);
 
 /*
 Input:
@@ -48,49 +48,49 @@ Input:
  2. roundResult: The char array result of the round
  3. roundKey: The key associated with this round
 */
-void generateNewRound(const char[8] inputData, char[8] roundResult, const char[6] roundKey);
+void generateNewRound(const char inputData[8], char roundResult[8], const char roundKey[6]);
 
 /*
 Input:
  1. inputData: The input char array to the function
  2. outputData: The output char array with the left/right halves swapped.
 */
- void swapHalves(const char[8] inputData, char[8] outputData);
+void swapHalves(const char inputData[8], char outputData[8]);
 
 /*
 Input:
  1. inputData: The input char array to the function
  2. postPermutation: the result of the halves swapped
 */
-void generateFinalPermutation(const char[8] inputData, char[8] postPermutation);
+void generateFinalPermutation(const char inputData[8], char postPermutation[8]);
 
 /*
 Input:
  1. sourceKey: The key that will be copied
  2. destinationKey: The key which will be overwritten with argument #1
 */
-void keyCopy(const char[8] sourceKey, char[8] destinationKey);
+void keyCopy(const char sourceKey[8], char destinationKey[8]);
 
 /*
 IMPLEMENTATION
 */
 
-int encryptDES(const char[8] inputData, char[8] outputData, const char[8] key)
+int encryptDES(const char inputData[8], char outputData[8], const char key[8])
 {
 	return performDES(inputData, outputData, key, 0);
 }
 
-int decryptDES(const char[8] inputData, char[8] outputData, const char[8] key)
+int decryptDES(const char inputData[8], char outputData[8], const char key[8])
 {
 	return performDES(inputData, outputData, key, 1);
 }
 
-int performDES(const char[8] inputData, char[8] outputData, const char[8] key, const int decrypt)
+int performDES(const char inputData[8], char outputData[8], const char key[8], const int decrypt)
 {
 	/* Function temporary variables: */
 	int successValue = 1; // Bias toward success
-	char[8] tempData; // Temporary data buffer for in-between encryption steps
-	char[16][6] roundKeys; // To store the round keys
+	char tempData[8]; // Temporary data buffer for in-between encryption steps
+	char roundKeys[16][6]; // To store the round keys
 
 	// First check the prity bit of the key to ensure that it was (1:256 chance) created and shared correctly (not super necessary, but might as well use the bits if we have them)
 	if (checkKeyParityBits(key) == 0) // 0 means incorrect  parity bits
@@ -120,9 +120,9 @@ int performDES(const char[8] inputData, char[8] outputData, const char[8] key, c
 	return successValue;
 }
 
-void performEcryptionRounds(const char[8] inputData, char[8] outputData, const char[16][6] roundKeys)
+void performEcryptionRounds(const char inputData[8], char outputData[8], const char roundKeys[16][6])
 {
-	char[8] tempData; // Temporary data buffer for in-between encryption steps
+	char tempData[8]; // Temporary data buffer for in-between encryption steps
 
 	// Initialize tempData with inputData before key rounds
 	keyCopy(inputData, tempData);

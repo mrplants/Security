@@ -11,7 +11,7 @@ Output:
 Notes:
  Function will attempt to encrypt even if key parity is incorrect (Output will be 0, however)
 */
-int encryptDES(const char[8] inputData, char[8] outputData, const char[8] key);
+int encryptDES(const char inputData[8], char outputData[8], const char key[8]);
 
 /*
 Input:
@@ -23,7 +23,7 @@ Output:
 Notes:
  Function will attempt to decrypt even if key parity is incorrect (Output will be 0, however)
 */
-int decryptDES(const char[8] inputData, char[8] outputData, const char[8] key);
+int decryptDES(const char inputData[8], char outputData[8], const char key[8]);
 
 /*
 Input:
@@ -31,4 +31,4 @@ Input:
 Output:
  0 implies key parity is incorrect. Otherwise correct
 */
-int checkKeyParityBits(const char[8] key);
+int checkKeyParityBits(const char key[8]);
