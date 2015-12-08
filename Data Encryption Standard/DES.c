@@ -85,6 +85,37 @@ int decryptDES(const char inputData[8], char outputData[8], const char key[8])
 	return performDES(inputData, outputData, key, 1);
 }
 
+int encrypt3DES(const char inputData[8], char outputData[8], const char key[8])
+{
+	return perform3DES(inputData, outputData, key, 0);
+}
+
+int decrypt3DES(const char inputData[8], char outputData[8], const char key[8])
+{
+	return perform3DES(inputData, outputData, key, 1);
+}
+
+int perform3DES(const char inputData[8], char outputData[8], const char key[8], const int decrypt)
+{
+	int result1 = 1; // Bias toward success
+	int result2 = 1;
+	int result3 = 1;
+
+	// For storing the result of meta-encryption steps
+	char tempData[8];
+	keyCopy(inputData, tempData);
+
+	result1 = performDES(tempData, outputData, key, decrypt);
+	keyCopy(outputData, tempData);
+
+	result2 = performDES(tempData, outputData, key, !decrypt);
+	keyCopy(outputData, tempData);
+
+	result3 = performDES(tempData, outputData, key, decrypt);
+
+	return (result1 && result2 && result3);
+}
+
 int performDES(const char inputData[8], char outputData[8], const char key[8], const int decrypt)
 {
 	/* Function temporary variables: */
