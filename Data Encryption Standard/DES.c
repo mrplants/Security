@@ -16,6 +16,20 @@ Input:
 Output:
  Success of the algorithm (0 is unsuccessful, otherwise successful)
 Notes:
+ 3DES is used as a stronger version of DES. encrypt-decrypt-encrypt and vice versa
+ The only difference between encryption and decryption is the order of the keys. Use this function for both and use argument #4 to differentiate
+*/
+int perform3DES(const char inputData[8], char outputData[8], const char key[8], const int decrypt);
+
+/*
+Input:
+ 1. inputData: The input char array.
+ 2. outputData: The output char array.
+ 3. key: The encryption key
+ 4. flag for decryption (0 for encryption, 1 for decryption)
+Output:
+ Success of the algorithm (0 is unsuccessful, otherwise successful)
+Notes:
  The only difference between encryption and decryption is the order of the keys. Use this function for both and use argument #4 to differentiate
 */
 int performDES(const char inputData[8], char outputData[8], const char key[8], const int decrypt);
